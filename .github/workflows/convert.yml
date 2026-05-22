@@ -29,3 +29,10 @@ jobs:
         run: python run.py
         env:
           PDF_URL: ${{ github.event.inputs.pdf_url }}
+
+      # 新增：把图片上传为 Artifact
+      - name: 上传长图
+        uses: actions/upload-artifact@v4
+        with:
+          name: output-image
+          path: output/output.png
