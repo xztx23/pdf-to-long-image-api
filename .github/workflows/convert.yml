@@ -6,7 +6,7 @@ on:
         required: true
 
 jobs:
-  build:
+  convert:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -24,8 +24,5 @@ jobs:
         run: python run.py
         env:
           PDF_URL: ${{ github.event.inputs.pdf_url }}
-      - name: 部署到Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./output
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
