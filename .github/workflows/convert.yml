@@ -12,8 +12,6 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: 安装依赖
         run: sudo apt-get update && sudo apt-get install -y poppler-utils
@@ -26,15 +24,15 @@ jobs:
       - name: 安装包
         run: pip install -r requirements.txt
 
-      - name: 运行转换
+      - name: 执行转换
         run: python run.py
         env:
           PDF_URL: ${{ github.event.inputs.pdf_url }}
 
-      - name: 提交新图片到仓库
+      - name: 提交图片
         run: |
           git config --global user.name "bot"
           git config --global user.email "bot@github.com"
           git add images/*.png
-          git commit -m "add new image" || true
+          git commit -m "add image" || true
           git push
