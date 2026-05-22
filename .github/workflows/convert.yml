@@ -6,8 +6,10 @@ on:
         required: true
 
 jobs:
-  convert:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: 安装依赖
@@ -22,3 +24,8 @@ jobs:
         run: python run.py
         env:
           PDF_URL: ${{ github.event.inputs.pdf_url }}
+      - name: 部署到Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output
