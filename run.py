@@ -1,5 +1,6 @@
 import os
 import io
+import base64
 import requests
 from PIL import Image
 from pdf2image import convert_from_path
@@ -40,26 +41,16 @@ def main():
             long_img.paste(page, (0, y_pos))
             y_pos += page.height
 
-        # 4. 把图片转成字节流，准备上传到 ImgBB
-        print("转换完成，准备上传...")
+        # 4. 把图片转成 Base64 编码
+        print("转换完成，准备编码...")
         img_buffer = io.BytesIO()
         long_img.save(img_buffer, format="PNG")
         img_buffer.seek(0)
+        base64_img = base64.b64encode(img_buffer.read()).decode("utf-8")
 
-        # 5. 上传图片到 ImgBB，获取公开 URL
-        print("正在上传图片到图床...")
-        upload_res = requests.post(
-            "https://api.imgbb.com/1/upload",
-            files={"image": img_buffer},
-            data={"key": "36f548047220a38299b9f0e1f0452727"}
-        )
-
-        if upload_res.status_code == 200:
-            result = upload_res.json()
-            image_url = result["data"]["url"]
-            print(f"\n✅ 图片URL：{image_url}\n")
-        else:
-            print(f"❌ 上传失败，错误信息：{upload_res.text}")
+        # 关键：直接在日志里打印 Base64 图片（大模型能直接识别）
+        print(f"\n✅ 图片生成成功！Base64 编码如下：\n")
+        print(f"data:image/png;base64,{base64_img}")
 
     except Exception as e:
         print(f"::error::转换出错: {e}")
