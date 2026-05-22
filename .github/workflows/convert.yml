@@ -3,26 +3,36 @@ on:
   workflow_dispatch:
     inputs:
       pdf_url:
+        description: 'PDF文件直链'
         required: true
 
 jobs:
   convert:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    timeout-minutes: 5
+
     steps:
       - uses: actions/checkout@v4
-      - name: 安装依赖
+
+      - name: 安装系统依赖（poppler）
         run: sudo apt-get update && sudo apt-get install -y poppler-utils
-      - name: Python环境
+
+      - name: 设置Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - name: 安装包
+          python-version: "3.11"
+
+      - name: 安装依赖
         run: pip install -r requirements.txt
-      - name: 执行转换
+
+      - name: 运行转换脚本
         run: python run.py
         env:
           PDF_URL: ${{ github.event.inputs.pdf_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
+
+      # 新增：把图片上传为 Artifact
+      - name: 上传长图
+        uses: actions/upload-artifact@v4
+        with:
+          name: output-image
+          path: output/output.png
