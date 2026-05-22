@@ -9,16 +9,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # 必须有这个权限才能提交代码
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 拉取完整历史，确保能正常 push
+          fetch-depth: 0
 
       - name: 安装依赖
         run: sudo apt-get update && sudo apt-get install -y poppler-utils
 
-      - name: 设置 Python
+      - name: Python环境
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -26,8 +26,15 @@ jobs:
       - name: 安装包
         run: pip install -r requirements.txt
 
-      - name: 执行转换与提交
+      - name: 运行转换
         run: python run.py
         env:
           PDF_URL: ${{ github.event.inputs.pdf_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 提交新图片到仓库
+        run: |
+          git config --global user.name "bot"
+          git config --global user.email "bot@github.com"
+          git add images/*.png
+          git commit -m "add new image" || true
+          git push
