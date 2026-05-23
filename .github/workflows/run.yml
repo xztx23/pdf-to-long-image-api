@@ -34,11 +34,12 @@ jobs:
         env:
           PDF_URL: ${{ github.event.inputs.pdf_url }}
           STUDENT_ID: ${{ github.event.inputs.student_id }}
-
+      
       - name: 提交图片
         run: |
           git config --global user.name "bot"
           git config --global user.email "bot@github.com"
+          git pull origin main
           git add images/*.png
           git commit -m "add image" || true
-          git push
+          git push origin main
