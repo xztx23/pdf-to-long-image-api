@@ -4,10 +4,10 @@ on:
     inputs:
       pdf_url:
         required: true
-        description: "待转换的PDF文件URL"
-      task_id:
+        description: "PDF文件URL"
+      student_id:
         required: true
-        description: "任务唯一ID，用于生成图片文件名"
+        description: "学生学号（图片名）"
 
 jobs:
   build:
@@ -25,14 +25,14 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: 安装包
+      - name: 安装Python包
         run: pip install -r requirements.txt
 
       - name: 执行转换
         run: python convert.py
         env:
           PDF_URL: ${{ github.event.inputs.pdf_url }}
-          TASK_ID: ${{ github.event.inputs.task_id }}
+          STUDENT_ID: ${{ github.event.inputs.student_id }}
 
       - name: 提交图片
         run: |
