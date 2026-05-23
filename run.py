@@ -38,7 +38,7 @@ def main():
         long_img.save(save_path)
 
         # 生成真实可访问的 GitHub 图片 URL
-        url = f"https://raw.githubusercontent.com/xztx23/pdf2img-api/main/{save_path}"
+        url = f"https://raw.githubusercontent.com/xztx23/pdf-to-long-image-api/main/{save_path}"
 
         # ========== 关键：输出固定格式，让扣子能读取 ==========
         print(f"IMAGE_URL:{url}")
