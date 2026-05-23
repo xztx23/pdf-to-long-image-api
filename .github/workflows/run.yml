@@ -1,0 +1,43 @@
+name: PDF转长图
+on:
+  workflow_dispatch:
+    inputs:
+      pdf_url:
+        required: true
+        description: "待转换的PDF文件URL"
+      task_id:
+        required: true
+        description: "任务唯一ID，用于生成图片文件名"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装依赖
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - name: Python环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 安装包
+        run: pip install -r requirements.txt
+
+      - name: 执行转换
+        run: python convert.py
+        env:
+          PDF_URL: ${{ github.event.inputs.pdf_url }}
+          TASK_ID: ${{ github.event.inputs.task_id }}
+
+      - name: 提交图片
+        run: |
+          git config --global user.name "bot"
+          git config --global user.email "bot@github.com"
+          git add images/*.png
+          git commit -m "add image" || true
+          git push
